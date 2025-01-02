@@ -12,6 +12,9 @@ data = yf.download(stock, start, end)
 
 data.reset_index(inplace=True)
 
+data.dropna(inplace= True)
+print(data)
+
 ma_100_days = data.Close.rolling(100).mean()
 ma_200_days = data.Close.rolling(200).mean()
 
@@ -22,5 +25,10 @@ plt.plot(ma_200_days, 'b')
 plt.plot(data.Close, 'g')
 plt.show()
 
-print(data)
+data_train = pd.DataFrame(data.Close[0: int(len(data)*0.80)])
+data_test = pd.DataFrame(data.Close[int(len(data)*0.80): len(data)])
+
+data_train.shape()
+
+print(data_train)
 
