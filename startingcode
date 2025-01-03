@@ -28,7 +28,38 @@ plt.show()
 data_train = pd.DataFrame(data.Close[0: int(len(data)*0.80)])
 data_test = pd.DataFrame(data.Close[int(len(data)*0.80): len(data)])
 
-data_train.shape()
+data_train.shape[0]
 
-print(data_train)
+data_test.shape[0]
+
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler(feature_range=(0, 1))
+
+data_train_scale = scaler.fit_transform(data_train)
+x = []
+y = []
+for i in range(100, data_train_scale.shape[0]):
+    x.append(data_train_scale[i - 100:i])
+    y.append(data_train_scale[i, 0])
+
+x, y = np.array(x), np.array(y)
+from keras.layers import Dense, Dropout, LSTM
+from keras.models import Sequential
+
+model = Sequential()
+model.add(LSTM(units = 50, activation = 'relu', return_sequences = True, input_shape = ((x.shape[1], 1))))
+model.add(Dropout(0.2))
+
+model.add(LSTM(units = 60, activation = 'relu', return_sequences = True))
+model.add(Dropout(0.3))
+
+model.add(LSTM(units = 80, activation = 'relu', return_sequences = True))
+model.add(Dropout(0.4))
+
+model.add(LSTM(units = 120, activation = 'relu'))
+model.add(Dropout(0.5))
+
+model.add(Dense(units = 1))
+
+model.compile(optimizer = 'adam')
 
