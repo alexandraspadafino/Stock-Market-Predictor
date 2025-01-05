@@ -31,28 +31,12 @@ past_100_days = data_train.tail(100)
 data_test = pd.concat([past_100_days, data_test], ignore_index=True)
 data_test_scale = scaler.fit_transform(data_test)
 
-st.subheader('Price vs Moving Average 50')
+st.subheader('Price vs Moving Averages')
 ma_50_days = data.Close.rolling(50).mean()
-fig1 = plt.figure(figsize=(8,6))
-plt.plot(ma_50_days, 'r', label= 'MA50')
-plt.plot(data.Close, 'g', label= 'ORIGINAL')
-plt.legend()
-plt.show()
-st.pyplot(fig1)
-
-st.subheader('Price vs Moving Average 50 vs Moving Average 100')
 ma_100_days = data.Close.rolling(100).mean()
-fig2 = plt.figure(figsize=(8,6))
-plt.plot(ma_50_days, 'r', label='MA50')
-plt.plot(ma_100_days, 'b', label='MA100')
-plt.plot(data.Close, 'g', label='ORIGINAL')
-plt.legend()
-plt.show()
-st.pyplot(fig2)
-
-st.subheader('Price vs Moving Average 100 vs Moving Average 200')
 ma_200_days = data.Close.rolling(200).mean()
 fig3 = plt.figure(figsize=(8,6))
+plt.plot(ma_50_days, 'm', label= 'MA50')
 plt.plot(ma_100_days, 'r', label= 'MA100')
 plt.plot(ma_200_days, 'b', label= 'MA200')
 plt.plot(data.Close, 'g', label= 'ORIGINAL')
@@ -101,7 +85,6 @@ elif current_price < ma50 and current_price < ma100 and current_price < ma200:
     suggestion = "Short-Term Sell: Stock is below all three moving averages, indicating a downtrend."
 else: 
     suggestion = "Hold: Stock is in neutral position"
-
 # Display suggestion
 st.subheader('Stock Buy Suggestion')
 st.write(suggestion)
