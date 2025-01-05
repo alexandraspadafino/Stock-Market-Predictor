@@ -4,6 +4,7 @@ import yfinance as yf
 from keras.models import load_model
 import streamlit as st
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 model = load_model('Stock Predictions Model.keras')
 
@@ -12,7 +13,8 @@ st.header('Stock Market Predictor')
 stock = st.text_input('Enter Stock Symbol', 'GOOG')
 
 start = '2018-01-01'
-end = '2024-12-31'
+# Get the current date dynamically
+end = datetime.today().strftime('%Y-%m-%d')  # Format today's date as 'YYYY-MM-DD'
 
 data = yf.download(stock, start, end)
 
@@ -81,3 +83,25 @@ plt.ylabel('Price')
 plt.legend()
 plt.show()
 st.pyplot(fig4)
+
+# Add in logic for short-term, medium-term, and long-term stocks to suggest the user to buy
+current_price = data.Close.iloc[-1].item()
+ma50 = ma_50_days.iloc[-1].item()
+ma100 = ma_100_days.iloc[-1].item()
+ma200 = ma_200_days.iloc[-1].item()
+
+# Define your short-term, medium-term, and long-term buy logic based on price trends
+if current_price > ma50 and current_price > ma100 and current_price > ma200: 
+    suggestion = "Long-Term Buy: Stock is above all three moving averages, indicating a strong uptrend."
+elif current_price > ma50 and current_price > ma100:
+    suggestion = "Medium-Term Buy: Stock is above short-term and mid-term moving averages but may face resistance at the long-term moving average."
+elif current_price > ma50: 
+    suggestion = "Short-Term Buy: Stock is short-term moving average, but long-term trends are not favorable."
+elif current_price < ma50 and current_price < ma100 and current_price < ma200:
+    suggestion = "Short-Term Sell: Stock is below all three moving averages, indicating a downtrend."
+else: 
+    suggestion = "Hold: Stock is in neutral position"
+
+# Display suggestion
+st.subheader('Stock Buy Suggestion')
+st.write(suggestion)
